@@ -1,55 +1,63 @@
-<div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-brand">Nóva</div>
-    <h2>Create account</h2>
-    <p class="subtitle">Join us for exclusive deals and offers</p>
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full bg-white p-8 rounded-xl shadow-md">
+    <div class="text-center">
+      <div class="text-3xl font-bold tracking-tight text-gray-900">Nóva</div>
+      <h2 class="mt-6 text-2xl font-bold text-gray-900">Create account</h2>
+      <p class="mt-2 text-sm text-gray-600">Join us for exclusive deals and offers</p>
+    </div>
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <div class="row-2">
-        <div class="field">
-          <label>First name</label>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-8 space-y-6">
+      <!-- First + Last Name Row -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">First name</label>
           <input type="text" formControlName="firstName" placeholder="John"
-            [class.invalid]="form.get('firstName')?.invalid && form.get('firstName')?.touched"/>
-          <span class="field-error"
-            *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched">Required</span>
+                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-gray-500 focus:border-gray-500">
+          <p *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched"
+             class="mt-1 text-xs text-red-600">Required</p>
         </div>
-        <div class="field">
-          <label>Last name</label>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Last name</label>
           <input type="text" formControlName="lastName" placeholder="Doe"
-            [class.invalid]="form.get('lastName')?.invalid && form.get('lastName')?.touched"/>
-          <span class="field-error"
-            *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched">Required</span>
+                 class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-gray-500 focus:border-gray-500">
+          <p *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched"
+             class="mt-1 text-xs text-red-600">Required</p>
         </div>
       </div>
 
-      <div class="field">
-        <label>Email address</label>
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email address</label>
         <input type="email" formControlName="email" placeholder="you@example.com"
-          [class.invalid]="form.get('email')?.invalid && form.get('email')?.touched"/>
-        <span class="field-error"
-          *ngIf="form.get('email')?.invalid && form.get('email')?.touched">Enter a valid email</span>
+               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-gray-500 focus:border-gray-500">
+        <p *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
+           class="mt-1 text-xs text-red-600">Enter a valid email</p>
       </div>
 
-      <div class="field">
-        <label>Password</label>
+      <!-- Password -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Password</label>
         <input type="password" formControlName="password" placeholder="Min 6 characters"
-          [class.invalid]="form.get('password')?.invalid && form.get('password')?.touched"/>
-        <span class="field-error"
-          *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
-          At least 6 characters required
-        </span>
+               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-gray-500 focus:border-gray-500">
+        <p *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
+           class="mt-1 text-xs text-red-600">At least 6 characters required</p>
       </div>
 
-      <div class="server-error" *ngIf="error">{{ error }}</div>
+      <!-- Server error -->
+      <div *ngIf="error" class="text-sm text-red-600 text-center bg-red-50 p-2 rounded">
+        {{ error }}
+      </div>
 
-      <button type="submit" class="submit-btn" [disabled]="form.invalid || loading">
+      <!-- Submit -->
+      <button type="submit" [disabled]="form.invalid || loading"
+              class="w-full bg-gray-900 text-white py-2 rounded-md font-semibold hover:bg-gray-800 transition disabled:opacity-50">
         <span *ngIf="!loading">Create Account</span>
         <span *ngIf="loading">Creating...</span>
       </button>
     </form>
 
-    <p class="switch-link">
-      Already have an account? <a routerLink="/login">Sign in</a>
+    <p class="mt-4 text-center text-sm text-gray-600">
+      Already have an account? <a routerLink="/login" class="font-medium text-gray-900 hover:text-gray-700">Sign in</a>
     </p>
   </div>
 </div>

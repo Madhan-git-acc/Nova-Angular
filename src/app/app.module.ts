@@ -15,27 +15,30 @@ import { OrdersComponent } from './pages/home/orders.component';
 import { ProductDetailComponent } from './pages/home/product-detail.component';
 import { ProductListComponent } from './pages/home/product-list.component';
 import { RegisterComponent } from './pages/home/register.component';
+import { AuthGuard } from './guards/auth.guard';
+import { ConfirmModalComponent } from './pages/confirmation-modal/confirm-modal.component';
+import { ImageUrlPipe } from './pipes/image-url.pipe';
 
 // Import your components here as you create them
 
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'products', component: ProductListComponent },
-  { path: 'products/:id', component: ProductDetailComponent },
-  { path: 'cart', component: CartComponent },
-  { path: 'checkout', component: CheckoutComponent },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'products', component: ProductListComponent, canActivate: [AuthGuard] },
+  { path: 'products/:id', component: ProductDetailComponent, canActivate: [AuthGuard] },
+  { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
+  { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] },
+  { path: 'orders', component: OrdersComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'orders', component: OrdersComponent },
-  { path: '**', redirectTo: '' }
+  { path: '', redirectTo: '/home', pathMatch: 'full' },    // redirects to protected home
+  { path: '**', redirectTo: '/home' }                     // wildcard also goes to home (protected)
 ];
-
 @NgModule({
   declarations: [
     AppComponent, HomeComponent, ProductListComponent, ProductDetailComponent,
     CartComponent, CheckoutComponent, LoginComponent, RegisterComponent,
-    OrdersComponent, NavbarComponent
+    OrdersComponent, NavbarComponent, ConfirmModalComponent, ImageUrlPipe
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule,

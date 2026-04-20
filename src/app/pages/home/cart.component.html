@@ -1,66 +1,115 @@
-<div class="cart-page">
-  <div class="cart-header">
-    <h1>Shopping Cart</h1>
-    <span class="item-count">{{ items.length }} item(s)</span>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Shopping Cart</h1>
+    <span class="text-gray-500">{{ items.length }} item(s)</span>
   </div>
 
   <!-- Loading -->
-  <div class="loading-wrap" *ngIf="loading">
-    <div class="spinner"></div>
+  <div *ngIf="loading" class="flex justify-center py-12">
+    <div
+      class="w-8 h-8 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"
+    ></div>
   </div>
 
   <!-- Empty Cart -->
-  <div class="empty-cart" *ngIf="!loading && items.length === 0">
-    <div class="empty-icon">🛒</div>
-    <h2>Your cart is empty</h2>
-    <p>Looks like you haven't added anything yet.</p>
-    <a routerLink="/products" class="shop-btn">Start Shopping</a>
+  <div *ngIf="!loading && items.length === 0" class="text-center py-16">
+    <div class="text-6xl mb-4">🛒</div>
+    <h2 class="text-xl font-semibold mb-2">Your cart is empty</h2>
+    <p class="text-gray-500 mb-6">Looks like you haven't added anything yet.</p>
+    <a
+      routerLink="/products"
+      class="inline-block bg-gray-900 text-white px-6 py-2 rounded-full hover:bg-gray-800 transition"
+    >
+      Start Shopping
+    </a>
   </div>
 
-  <!-- Cart Content -->
-  <div class="cart-layout" *ngIf="!loading && items.length > 0">
-
-    <!-- Items List -->
-    <div class="items-list">
-      <div class="cart-item" *ngFor="let item of items">
-        <img [src]="item.imageUrl || 'assets/placeholder.jpg'" [alt]="item.productName" alt="" />
-        <div class="item-details">
-          <h3>{{ item.productName }}</h3>
-          <div class="item-meta">
+  <!-- Cart Content (2 columns: items + summary) -->
+  <div
+    *ngIf="!loading && items.length > 0"
+    class="flex flex-col lg:flex-row gap-8"
+  >
+    <!-- Items list -->
+    <div class="flex-1 space-y-4">
+      <div
+        *ngFor="let item of items"
+        class="flex flex-wrap sm:flex-nowrap gap-4 p-4 bg-white rounded-lg shadow-sm border"
+      >
+        <img
+          [src]="item.imageUrl | imageUrl"
+          [alt]="item.productName"
+          alt=""
+          class="w-24 h-24 object-cover rounded-md"
+        />
+        <div class="flex-1">
+          <h3 class="font-semibold">{{ item.productName }}</h3>
+          <div class="text-sm text-gray-500 mt-1">
             <span *ngIf="item.size">Size: {{ item.size }}</span>
-            <span *ngIf="item.color">Color: {{ item.color }}</span>
+            <span *ngIf="item.color" class="ml-2">Color: {{ item.color }}</span>
           </div>
-          <p class="item-price">₹{{ item.price }} × {{ item.quantity }}</p>
+          <p class="text-sm text-gray-700 mt-1">
+            ₹{{ item.price }} × {{ item.quantity }}
+          </p>
         </div>
-        <div class="item-total">
-          <span>₹{{ item.price * item.quantity }}</span>
-          <button class="remove-btn" (click)="remove(item.id)">Remove</button>
+        <div class="text-right">
+          <div class="font-semibold">₹{{ item.price * item.quantity }}</div>
+          <button
+            (click)="openDeleteModal(item.id)"
+            class="text-red-500 text-sm hover:text-red-700 mt-2"
+          >
+            Remove
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Order Summary -->
-    <div class="order-summary">
-      <h2>Order Summary</h2>
-      <div class="summary-row">
-        <span>Subtotal</span>
-        <span>₹{{ subtotal }}</span>
+    <div class="lg:w-80 bg-gray-50 p-6 rounded-lg h-fit sticky top-24">
+      <h2 class="text-lg font-bold mb-4">Order Summary</h2>
+      <div class="space-y-2">
+        <div class="flex justify-between">
+          <span>Subtotal</span>
+          <span>₹{{ subtotal }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Shipping</span>
+          <span *ngIf="shipping === 0" class="text-green-600">FREE</span>
+          <span *ngIf="shipping > 0">₹{{ shipping }}</span>
+        </div>
+        <div *ngIf="shipping > 0" class="text-xs text-gray-500 text-right">
+          Add ₹{{ 999 - subtotal }} more for free shipping
+        </div>
+        <div class="border-t my-3"></div>
+        <div class="flex justify-between font-bold text-lg">
+          <span>Total</span>
+          <span>₹{{ total }}</span>
+        </div>
       </div>
-      <div class="summary-row">
-        <span>Shipping</span>
-        <span class="free" *ngIf="shipping === 0">FREE</span>
-        <span *ngIf="shipping > 0">₹{{ shipping }}</span>
-      </div>
-      <div class="summary-row" *ngIf="shipping > 0">
-        <span class="free-hint">Add ₹{{ 999 - subtotal }} more for free shipping</span>
-      </div>
-      <div class="summary-divider"></div>
-      <div class="summary-row total-row">
-        <strong>Total</strong>
-        <strong>₹{{ total }}</strong>
-      </div>
-      <button class="checkout-btn" (click)="checkout()">Proceed to Checkout</button>
-      <a routerLink="/products" class="continue-link">← Continue Shopping</a>
+      <button
+        (click)="checkout()"
+        class="w-full mt-6 bg-gray-900 text-white py-2 rounded-md hover:bg-gray-800 transition"
+      >
+        Proceed to Checkout
+      </button>
+      <a
+        routerLink="/products"
+        class="block text-center text-sm text-gray-500 mt-4 hover:text-gray-900"
+      >
+        ← Continue Shopping
+      </a>
     </div>
   </div>
 </div>
+
+<app-confirm-modal
+  [isOpen]="showDeleteModal"
+  title="Remove item"
+  message="Are you sure you want to remove this item from your cart?"
+  confirmText="Remove"
+  confirmButtonClass="bg-red-600 hover:bg-red-700"
+  (confirm)="confirmDelete()"
+  (cancel)="showDeleteModal = false"
+>
+  <div icon>🗑️</div>
+</app-confirm-modal>

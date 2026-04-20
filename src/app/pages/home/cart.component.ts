@@ -5,16 +5,21 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
-  styleUrls: ['./cart.component.css']
+  styleUrls: ['./cart.component.css'],
 })
 export class CartComponent implements OnInit {
   items: any[] = [];
   loading = true;
+  showDeleteModal = false;
+  itemToDeleteId: number | null = null;
 
-  constructor(private cartService: CartService, private router: Router) {}
+  constructor(
+    private cartService: CartService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
-    this.cartService.getCart().subscribe(data => {
+    this.cartService.getCart().subscribe((data) => {
       this.items = data;
       this.loading = false;
     });
@@ -34,11 +39,23 @@ export class CartComponent implements OnInit {
 
   remove(id: number): void {
     this.cartService.removeItem(id).subscribe(() => {
-      this.items = this.items.filter(i => i.id !== id);
+      this.items = this.items.filter((i) => i.id !== id);
     });
   }
 
   checkout(): void {
     this.router.navigate(['/checkout']);
+  }
+
+  openDeleteModal(itemId: number) {
+    this.itemToDeleteId = itemId;
+    this.showDeleteModal = true;
+  }
+
+  confirmDelete() {
+    if (this.itemToDeleteId) {
+      this.remove(this.itemToDeleteId);
+    }
+    this.showDeleteModal = false;
   }
 }

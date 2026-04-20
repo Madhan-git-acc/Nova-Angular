@@ -19,6 +19,7 @@ export class ProductDetailComponent implements OnInit {
   addedMsg: string = '';
   error: string = '';
   loading = true;
+  addingToCart = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -61,6 +62,13 @@ export class ProductDetailComponent implements OnInit {
       this.router.navigate(['/login']);
       return;
     }
+
+    if (this.addingToCart) return; // prevent double click
+
+    this.addingToCart = true;
+    this.error = '';
+    this.addedMsg = '';
+
     this.cartService.addToCart({
       productId: this.product.id,
       quantity: this.quantity,
@@ -68,10 +76,19 @@ export class ProductDetailComponent implements OnInit {
       color: this.selectedColor
     }).subscribe({
       next: () => {
+        this.addingToCart = false;
         this.addedMsg = '✓ Added to cart!';
-        setTimeout(() => this.addedMsg = '', 3000);
+        // Auto-clear success message after 2.5 seconds
+        setTimeout(() => {
+          if (this.addedMsg === '✓ Added to cart!') this.addedMsg = '';
+        }, 2500);
       },
-      error: () => this.error = 'Could not add to cart. Please try again.'
+      error: (err) => {
+        this.addingToCart = false;
+        this.error = 'Could not add to cart. Please try again.';
+        // Auto-clear error after 3 seconds
+        setTimeout(() => this.error = '', 3000);
+      }
     });
   }
 

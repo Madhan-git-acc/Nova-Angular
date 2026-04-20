@@ -1,110 +1,228 @@
 <!-- Loading -->
-<div class="loading-wrap" *ngIf="loading">
-  <div class="spinner"></div>
+<div *ngIf="loading" class="flex justify-center py-12">
+  <div
+    class="w-8 h-8 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"
+  ></div>
 </div>
 
-<div class="detail-page" *ngIf="!loading && product">
-
+<div *ngIf="!loading && product" class="max-w-7xl mx-auto px-4 py-8">
   <!-- Breadcrumb -->
-  <div class="breadcrumb">
-    <a routerLink="/">Home</a>
+  <div class="flex items-center gap-2 text-sm text-gray-500 mb-6">
+    <a routerLink="/home" class="hover:text-gray-900">Home</a>
     <span>/</span>
-    <a routerLink="/products">Products</a>
+    <a routerLink="/products" class="hover:text-gray-900">Products</a>
     <span>/</span>
-    <span>{{ product.name }}</span>
+    <span class="text-gray-900">{{ product.name }}</span>
   </div>
 
-  <div class="detail-grid">
-
+  <!-- Product Grid (2 columns on desktop) -->
+  <div class="flex flex-col lg:flex-row gap-8">
     <!-- Image Gallery -->
-    <div class="gallery">
-      <div class="main-image">
-        <img [src]="selectedImage || 'assets/placeholder.jpg'" [alt]="product.name" alt="" />
-        <span class="discount-badge" *ngIf="discount > 0">{{ discount }}% OFF</span>
+    <div class="lg:w-1/2">
+      <div class="relative bg-gray-100 rounded-lg overflow-hidden">
+        <img
+          [src]="selectedImage | imageUrl"
+          [alt]="product.name"
+          alt=""
+          class="w-full object-cover aspect-square"
+        />
+        <span
+          *ngIf="discount > 0"
+          class="absolute top-4 left-4 bg-red-500 text-white text-sm font-bold px-2 py-1 rounded"
+        >
+          {{ discount }}% OFF
+        </span>
       </div>
-      <div class="thumbnails" *ngIf="product.images?.length > 1">
+      <div *ngIf="product.images?.length > 1" class="flex gap-2 mt-4">
         <img
           *ngFor="let img of product.images"
           [src]="img"
           [alt]="product.name"
-          [class.active]="img === selectedImage"
+          alt=""
           (click)="selectImage(img)"
-          alt = ""
+          class="w-20 h-20 object-cover rounded-md cursor-pointer border-2 transition"
+          [class.border-gray-900]="img === selectedImage"
+          [class.border-transparent]="img !== selectedImage"
         />
       </div>
     </div>
 
     <!-- Product Info -->
-    <div class="info-panel">
-      <span class="brand-tag">{{ product.brand }}</span>
-      <h1>{{ product.name }}</h1>
+    <div class="lg:w-1/2">
+      <span class="text-sm text-gray-500 uppercase tracking-wide">{{
+        product.brand
+      }}</span>
+      <h1 class="text-2xl md:text-3xl font-bold mt-1">{{ product.name }}</h1>
 
       <!-- Rating -->
-      <div class="rating-row">
-        <div class="stars">
-          <span
-            *ngFor="let s of stars"
-            class="star"
-            [class.filled]="s <= product.averageRating"
-          >★</span>
+      <div class="flex items-center gap-2 mt-3">
+        <div class="flex text-amber-400">
+          <span *ngFor="let s of stars" class="text-lg">
+            {{ s <= product.averageRating ? "★" : "☆" }}
+          </span>
         </div>
-        <span class="rating-text">{{ product.averageRating }}/5 ({{ product.reviewCount }} reviews)</span>
+        <span class="text-sm text-gray-500"
+          >{{ product.averageRating }}/5 ({{
+            product.reviewCount
+          }}
+          reviews)</span
+        >
       </div>
 
       <!-- Price -->
-      <div class="price-block">
-        <span class="price-main" *ngIf="product.salePrice">₹{{ product.salePrice }}</span>
-        <span class="price-main no-sale" *ngIf="!product.salePrice">₹{{ product.price }}</span>
-        <span class="price-old" *ngIf="product.salePrice">₹{{ product.price }}</span>
-        <span class="savings" *ngIf="product.salePrice">Save ₹{{ product.price - product.salePrice }}</span>
+      <div class="mt-4">
+        <span *ngIf="product.salePrice" class="text-2xl font-bold text-red-600"
+          >₹{{ product.salePrice }}</span
+        >
+        <span *ngIf="!product.salePrice" class="text-2xl font-bold"
+          >₹{{ product.price }}</span
+        >
+        <span *ngIf="product.salePrice" class="ml-2 text-gray-400 line-through"
+          >₹{{ product.price }}</span
+        >
+        <span *ngIf="product.salePrice" class="ml-2 text-green-600 text-sm"
+          >Save ₹{{ product.price - product.salePrice }}</span
+        >
       </div>
 
-      <p class="description">{{ product.description }}</p>
+      <!-- Description -->
+      <p class="text-gray-600 mt-4">{{ product.description }}</p>
 
       <!-- Size Selector -->
-      <div class="option-group" *ngIf="sizes.length > 0">
-        <label class="option-label">Size</label>
-        <div class="option-chips">
+      <div *ngIf="sizes.length > 0" class="mt-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Size</label>
+        <div class="flex flex-wrap gap-2">
           <button
             *ngFor="let s of sizes"
-            class="chip"
-            [class.selected]="s === selectedSize"
             (click)="selectedSize = s"
-          >{{ s.trim() }}</button>
+            class="px-4 py-2 border rounded-md text-sm transition"
+            [class.bg-gray-900]="s === selectedSize"
+            [class.text-white]="s === selectedSize"
+            [class.border-gray-300]="s !== selectedSize"
+            [class.hover:border-gray-900]="s !== selectedSize"
+          >
+            {{ s.trim() }}
+          </button>
         </div>
       </div>
 
       <!-- Color Selector -->
-      <div class="option-group" *ngIf="colors.length > 0">
-        <label class="option-label">Color</label>
-        <div class="option-chips">
+      <div *ngIf="colors.length > 0" class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2"
+          >Color</label
+        >
+        <div class="flex flex-wrap gap-2">
           <button
             *ngFor="let c of colors"
-            class="chip"
-            [class.selected]="c === selectedColor"
             (click)="selectedColor = c"
-          >{{ c.trim() }}</button>
+            class="px-4 py-2 border rounded-md text-sm transition"
+            [class.bg-gray-900]="c === selectedColor"
+            [class.text-white]="c === selectedColor"
+            [class.border-gray-300]="c !== selectedColor"
+          >
+            {{ c.trim() }}
+          </button>
         </div>
       </div>
 
       <!-- Quantity -->
-      <div class="option-group">
-        <label class="option-label">Quantity</label>
-        <div class="qty-control">
-          <button (click)="quantity = quantity > 1 ? quantity - 1 : 1">−</button>
-          <span>{{ quantity }}</span>
-          <button (click)="quantity = quantity + 1">+</button>
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2"
+          >Quantity</label
+        >
+        <div class="flex items-center gap-3">
+          <button
+            (click)="quantity = quantity > 1 ? quantity - 1 : 1"
+            class="w-8 h-8 border rounded-md flex items-center justify-center hover:bg-gray-100"
+          >
+            −
+          </button>
+          <span class="w-8 text-center">{{ quantity }}</span>
+          <button
+            (click)="quantity = quantity + 1"
+            class="w-8 h-8 border rounded-md flex items-center justify-center hover:bg-gray-100"
+          >
+            +
+          </button>
         </div>
       </div>
 
-      <!-- Add to Cart -->
-      <button class="add-btn" (click)="addToCart()">Add to Cart</button>
-      <p class="success-msg" *ngIf="addedMsg">{{ addedMsg }}</p>
-      <p class="error-msg" *ngIf="error">{{ error }}</p>
+      <!-- Add to Cart Button with loading state -->
+      <button
+        (click)="addToCart()"
+        [disabled]="addingToCart"
+        class="relative w-full mt-6 bg-gray-900 text-white py-3 rounded-md font-semibold transition overflow-hidden"
+        [class.bg-green-600]="addedMsg && !addingToCart"
+        [class.opacity-70]="addingToCart"
+      >
+        <span *ngIf="!addingToCart && !addedMsg">Add to Cart</span>
+        <span
+          *ngIf="addingToCart"
+          class="flex items-center justify-center gap-2"
+        >
+          <svg
+            class="animate-spin h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          Adding...
+        </span>
+        <span
+          *ngIf="!addingToCart && addedMsg"
+          class="flex items-center justify-center gap-2"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+          {{ addedMsg }}
+        </span>
+      </button>
+
+      <!-- Error message with shake animation -->
+      <p *ngIf="error" class="mt-2 text-red-600 text-sm animate-shake">
+        {{ error }}
+      </p>
 
       <!-- Stock Info -->
-      <p class="stock-info" [class.low]="product.stockQuantity < 10">
-        {{ product.stockQuantity > 0 ? (product.stockQuantity < 10 ? 'Only ' + product.stockQuantity + ' left!' : 'In stock') : 'Out of stock' }}
+      <p
+        class="mt-3 text-sm"
+        [class.text-red-600]="
+          product.stockQuantity < 10 && product.stockQuantity > 0
+        "
+        [class.text-gray-500]="product.stockQuantity >= 10"
+      >
+        {{
+          product.stockQuantity > 0
+            ? product.stockQuantity < 10
+              ? "Only " + product.stockQuantity + " left!"
+              : "In stock"
+            : "Out of stock"
+        }}
       </p>
     </div>
   </div>

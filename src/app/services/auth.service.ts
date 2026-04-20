@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { CartService } from './cart.service';
 
 export interface AuthUser { token: string; email: string; firstName: string; role: string; }
 
@@ -13,7 +14,7 @@ export class AuthService {
     JSON.parse(localStorage.getItem('user') || 'null'));
   user$ = this.userSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cartService: CartService) {}
 
   register(data: any) {
     return this.http.post<AuthUser>(`${this.apiUrl}/register`, data).pipe(
@@ -28,6 +29,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('user');
     this.userSubject.next(null);
+    this.cartService.clearCart(); 
   }
 
   getToken() { return this.userSubject.value?.token; }
