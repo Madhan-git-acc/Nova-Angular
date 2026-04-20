@@ -1,0 +1,53 @@
+<div class="orders-page">
+  <h1>My Orders</h1>
+
+  <div class="loading-wrap" *ngIf="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="empty-orders" *ngIf="!loading && orders.length === 0">
+    <div class="empty-icon">📦</div>
+    <h2>No orders yet</h2>
+    <p>Once you place an order, it will appear here.</p>
+    <a routerLink="/products" class="shop-btn">Start Shopping</a>
+  </div>
+
+  <div class="orders-list" *ngIf="!loading && orders.length > 0">
+    <div class="order-card" *ngFor="let order of orders">
+      <div class="order-header">
+        <div>
+          <span class="order-id">Order #{{ order.id }}</span>
+          <span class="order-date">{{ order.createdAt | date:'dd MMM yyyy' }}</span>
+        </div>
+        <div class="order-right">
+          <span class="status-badge" [ngClass]="statusClass(order.status)">
+            {{ order.status | titlecase }}
+          </span>
+          <span class="order-total">₹{{ order.totalAmount }}</span>
+        </div>
+      </div>
+
+      <div class="order-items">
+        <div class="order-item" *ngFor="let item of order.items">
+          <span class="item-name">{{ item.productName }}</span>
+          <span class="item-meta">
+            <span *ngIf="item.size">{{ item.size }}</span>
+            <span *ngIf="item.color">{{ item.color }}</span>
+            <span>× {{ item.quantity }}</span>
+          </span>
+          <span class="item-price">₹{{ item.price * item.quantity }}</span>
+        </div>
+      </div>
+
+      <div class="order-footer">
+        <span class="payment-info">
+          Payment: {{ order.paymentMethod }} —
+          <span [class.paid]="order.paymentStatus === 'paid'"
+                [class.unpaid]="order.paymentStatus !== 'paid'">
+            {{ order.paymentStatus | titlecase }}
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

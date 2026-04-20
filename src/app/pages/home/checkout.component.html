@@ -1,0 +1,92 @@
+<div class="checkout-page">
+  <h1>Checkout</h1>
+
+  <!-- Success -->
+  <div class="success-screen" *ngIf="success">
+    <div class="success-icon">✓</div>
+    <h2>Order Placed!</h2>
+    <p>Thank you for your purchase. Redirecting to your orders...</p>
+  </div>
+
+  <div class="checkout-grid" *ngIf="!success">
+
+    <!-- Address Form -->
+    <div class="form-section">
+      <h2>Delivery Address</h2>
+      <form [formGroup]="form" (ngSubmit)="placeOrder()">
+
+        <div class="field">
+          <label>Full name</label>
+          <input type="text" formControlName="fullName" placeholder="John Doe"/>
+        </div>
+
+        <div class="field">
+          <label>Address line 1</label>
+          <input type="text" formControlName="line1" placeholder="House No., Street"/>
+        </div>
+
+        <div class="field">
+          <label>Address line 2 <span class="optional">(optional)</span></label>
+          <input type="text" formControlName="line2" placeholder="Landmark, Area"/>
+        </div>
+
+        <div class="row-3">
+          <div class="field">
+            <label>City</label>
+            <input type="text" formControlName="city" placeholder="Chennai"/>
+          </div>
+          <div class="field">
+            <label>State</label>
+            <input type="text" formControlName="state" placeholder="Tamil Nadu"/>
+          </div>
+          <div class="field">
+            <label>PIN code</label>
+            <input type="text" formControlName="postalCode" placeholder="600001"/>
+          </div>
+        </div>
+
+        <h2 class="section-title">Payment Method</h2>
+
+        <div class="payment-options">
+          <label class="pay-option" [class.selected]="form.get('paymentMethod')?.value === 'COD'">
+            <input type="radio" formControlName="paymentMethod" value="COD"/>
+            <span>Cash on Delivery</span>
+          </label>
+          <label class="pay-option" [class.selected]="form.get('paymentMethod')?.value === 'UPI'">
+            <input type="radio" formControlName="paymentMethod" value="UPI"/>
+            <span>UPI</span>
+          </label>
+          <label class="pay-option" [class.selected]="form.get('paymentMethod')?.value === 'Card'">
+            <input type="radio" formControlName="paymentMethod" value="Card"/>
+            <span>Credit / Debit Card</span>
+          </label>
+        </div>
+
+        <div class="server-error" *ngIf="error">{{ error }}</div>
+
+        <button type="submit" class="place-btn" [disabled]="form.invalid || loading">
+          <span *ngIf="!loading">Place Order · ₹{{ subtotal }}</span>
+          <span *ngIf="loading">Placing order...</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="summary-panel">
+      <h2>Order Summary</h2>
+      <div class="summary-item" *ngFor="let item of cartItems">
+        <span class="summary-name">{{ item.productName }}
+          <small *ngIf="item.size">{{ item.size }}</small>
+          <small *ngIf="item.color">{{ item.color }}</small>
+          × {{ item.quantity }}
+        </span>
+        <span>₹{{ item.price * item.quantity }}</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-total">
+        <strong>Total</strong>
+        <strong>₹{{ subtotal }}</strong>
+      </div>
+    </div>
+  </div>
+</div>

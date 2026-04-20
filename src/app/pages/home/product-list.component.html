@@ -1,0 +1,106 @@
+<div class="page-layout">
+
+  <!-- Sidebar Filters -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h3>Filters</h3>
+      <button class="clear-btn" (click)="clearFilters()">Clear all</button>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">Category</label>
+      <select [(ngModel)]="filters.categoryId" (change)="onFilterChange()">
+        <option [ngValue]="null">All Categories</option>
+        <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">Price Range</label>
+      <div class="price-inputs">
+        <input
+          type="number"
+          placeholder="Min ₹"
+          [(ngModel)]="filters.minPrice"
+          (change)="onFilterChange()"
+        />
+        <span>–</span>
+        <input
+          type="number"
+          placeholder="Max ₹"
+          [(ngModel)]="filters.maxPrice"
+          (change)="onFilterChange()"
+        />
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">Availability</label>
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [(ngModel)]="filters.featured"
+          [ngModelOptions]="{standalone: true}"
+          (change)="onFilterChange()"
+        />
+        Featured only
+      </label>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Search products, brands..."
+        [(ngModel)]="filters.search"
+        (input)="onFilterChange()"
+      />
+      <span class="result-count" *ngIf="!loading">{{ total }} products found</span>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-spinner" *ngIf="loading">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="product-grid" *ngIf="!loading">
+      <div
+        class="product-card"
+        *ngFor="let p of products"
+        [routerLink]="['/products', p.id]"
+      >
+        <div class="card-image">
+          <img [src]="p.primaryImage || 'assets/placeholder.jpg'" [alt]="p.name" alt="" />
+          <span class="sale-badge" *ngIf="p.salePrice">SALE</span>
+        </div>
+        <div class="card-body">
+          <span class="brand-label">{{ p.brand }}</span>
+          <h3>{{ p.name }}</h3>
+          <div class="price-row">
+            <span class="sale-price" *ngIf="p.salePrice">₹{{ p.salePrice }}</span>
+            <span class="original-price" [class.crossed]="p.salePrice">₹{{ p.price }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loading && products.length === 0">
+      <p>No products found. Try adjusting your filters.</p>
+      <button (click)="clearFilters()">Clear Filters</button>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="total > filters.pageSize">
+      <button (click)="prevPage()" [disabled]="filters.page === 1">← Prev</button>
+      <span>Page {{ filters.page }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="filters.page >= totalPages">Next →</button>
+    </div>
+
+  </main>
+</div>

@@ -1,0 +1,55 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">Nóva</div>
+    <h2>Create account</h2>
+    <p class="subtitle">Join us for exclusive deals and offers</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="row-2">
+        <div class="field">
+          <label>First name</label>
+          <input type="text" formControlName="firstName" placeholder="John"
+            [class.invalid]="form.get('firstName')?.invalid && form.get('firstName')?.touched"/>
+          <span class="field-error"
+            *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched">Required</span>
+        </div>
+        <div class="field">
+          <label>Last name</label>
+          <input type="text" formControlName="lastName" placeholder="Doe"
+            [class.invalid]="form.get('lastName')?.invalid && form.get('lastName')?.touched"/>
+          <span class="field-error"
+            *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched">Required</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" formControlName="email" placeholder="you@example.com"
+          [class.invalid]="form.get('email')?.invalid && form.get('email')?.touched"/>
+        <span class="field-error"
+          *ngIf="form.get('email')?.invalid && form.get('email')?.touched">Enter a valid email</span>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input type="password" formControlName="password" placeholder="Min 6 characters"
+          [class.invalid]="form.get('password')?.invalid && form.get('password')?.touched"/>
+        <span class="field-error"
+          *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+          At least 6 characters required
+        </span>
+      </div>
+
+      <div class="server-error" *ngIf="error">{{ error }}</div>
+
+      <button type="submit" class="submit-btn" [disabled]="form.invalid || loading">
+        <span *ngIf="!loading">Create Account</span>
+        <span *ngIf="loading">Creating...</span>
+      </button>
+    </form>
+
+    <p class="switch-link">
+      Already have an account? <a routerLink="/login">Sign in</a>
+    </p>
+  </div>
+</div>

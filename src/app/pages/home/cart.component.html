@@ -1,0 +1,66 @@
+<div class="cart-page">
+  <div class="cart-header">
+    <h1>Shopping Cart</h1>
+    <span class="item-count">{{ items.length }} item(s)</span>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-wrap" *ngIf="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Empty Cart -->
+  <div class="empty-cart" *ngIf="!loading && items.length === 0">
+    <div class="empty-icon">🛒</div>
+    <h2>Your cart is empty</h2>
+    <p>Looks like you haven't added anything yet.</p>
+    <a routerLink="/products" class="shop-btn">Start Shopping</a>
+  </div>
+
+  <!-- Cart Content -->
+  <div class="cart-layout" *ngIf="!loading && items.length > 0">
+
+    <!-- Items List -->
+    <div class="items-list">
+      <div class="cart-item" *ngFor="let item of items">
+        <img [src]="item.imageUrl || 'assets/placeholder.jpg'" [alt]="item.productName" alt="" />
+        <div class="item-details">
+          <h3>{{ item.productName }}</h3>
+          <div class="item-meta">
+            <span *ngIf="item.size">Size: {{ item.size }}</span>
+            <span *ngIf="item.color">Color: {{ item.color }}</span>
+          </div>
+          <p class="item-price">₹{{ item.price }} × {{ item.quantity }}</p>
+        </div>
+        <div class="item-total">
+          <span>₹{{ item.price * item.quantity }}</span>
+          <button class="remove-btn" (click)="remove(item.id)">Remove</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <h2>Order Summary</h2>
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span>₹{{ subtotal }}</span>
+      </div>
+      <div class="summary-row">
+        <span>Shipping</span>
+        <span class="free" *ngIf="shipping === 0">FREE</span>
+        <span *ngIf="shipping > 0">₹{{ shipping }}</span>
+      </div>
+      <div class="summary-row" *ngIf="shipping > 0">
+        <span class="free-hint">Add ₹{{ 999 - subtotal }} more for free shipping</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-row total-row">
+        <strong>Total</strong>
+        <strong>₹{{ total }}</strong>
+      </div>
+      <button class="checkout-btn" (click)="checkout()">Proceed to Checkout</button>
+      <a routerLink="/products" class="continue-link">← Continue Shopping</a>
+    </div>
+  </div>
+</div>

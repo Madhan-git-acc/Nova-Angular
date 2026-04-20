@@ -1,0 +1,53 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">Nóva</div>
+    <h2>Welcome back</h2>
+    <p class="subtitle">Sign in to your account</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label>Email address</label>
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="you@example.com"
+          [class.invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+        />
+        <span class="field-error"
+          *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+          Enter a valid email
+        </span>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="password-wrap">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Min 6 characters"
+            [class.invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+          />
+          <button type="button" class="show-hide" (click)="showPassword = !showPassword">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <span class="field-error"
+          *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+          Password must be at least 6 characters
+        </span>
+      </div>
+
+      <div class="server-error" *ngIf="error">{{ error }}</div>
+
+      <button type="submit" class="submit-btn" [disabled]="form.invalid || loading">
+        <span *ngIf="!loading">Sign In</span>
+        <span *ngIf="loading">Signing in...</span>
+      </button>
+    </form>
+
+    <p class="switch-link">
+      Don't have an account? <a routerLink="/register">Create one</a>
+    </p>
+  </div>
+</div>

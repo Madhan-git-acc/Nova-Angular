@@ -1,0 +1,25 @@
+<nav class="navbar">
+  <a routerLink="/" class="brand">Nóva</a>
+
+  <div class="links">
+    <a routerLink="/products">Shop</a>
+
+    <a routerLink="/cart" class="cart-link">
+      Cart
+      <span class="badge" *ngIf="(cartCount$ | async)! > 0">
+        {{ cartCount$ | async }}
+      </span>
+    </a>
+
+    <ng-container *ngIf="user$ | async as user; else guestLinks">
+      <a routerLink="/orders">My Orders</a>
+      <span class="welcome">Hi, {{ user.firstName }}</span>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </ng-container>
+
+    <ng-template #guestLinks>
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register" class="btn-register">Register</a>
+    </ng-template>
+  </div>
+</nav>

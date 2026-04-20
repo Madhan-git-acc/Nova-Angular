@@ -1,0 +1,82 @@
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-tag">New Arrivals 2025</span>
+    <h1>Dress to<br><span class="accent">Express.</span></h1>
+    <p>Premium clothing for every occasion. Style meets comfort.</p>
+    <div class="hero-actions">
+      <a routerLink="/products" class="btn-primary">Shop Collection</a>
+      <a routerLink="/products?featured=true" class="btn-secondary">View Lookbook</a>
+    </div>
+  </div>
+  <div class="hero-overlay"></div>
+</section>
+
+<!-- Category Bar -->
+<section class="categories-bar">
+  <a routerLink="/products" [queryParams]="{categoryId: 1}" class="cat-chip">Men</a>
+  <a routerLink="/products" [queryParams]="{categoryId: 2}" class="cat-chip">Women</a>
+  <a routerLink="/products" [queryParams]="{categoryId: 3}" class="cat-chip">Kids</a>
+  <a routerLink="/products" [queryParams]="{categoryId: 4}" class="cat-chip">Accessories</a>
+</section>
+
+<!-- Featured Products -->
+<section class="featured-section">
+  <div class="section-header">
+    <h2>Featured Products</h2>
+    <a routerLink="/products" class="view-all">View all →</a>
+  </div>
+
+  <div class="product-grid">
+    <div
+      class="product-card"
+      *ngFor="let p of featured"
+      [routerLink]="['/products', p.id]"
+    >
+      <div class="card-image">
+        <img [src]="p.primaryImage || 'assets/placeholder.jpg'" [alt]="p.name" alt="" />
+        <span class="sale-badge" *ngIf="p.salePrice">SALE</span>
+      </div>
+      <div class="card-body">
+        <span class="brand">{{ p.brand }}</span>
+        <h3>{{ p.name }}</h3>
+        <div class="price-row">
+          <span class="price-sale" *ngIf="p.salePrice">₹{{ p.salePrice }}</span>
+          <span class="price-original" [class.crossed]="p.salePrice">₹{{ p.price }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Banner Strip -->
+<section class="banner-strip">
+  <div class="banner-item">
+    <span class="banner-icon">🚚</span>
+    <div>
+      <strong>Free Shipping</strong>
+      <p>On orders above ₹999</p>
+    </div>
+  </div>
+  <div class="banner-item">
+    <span class="banner-icon">↩️</span>
+    <div>
+      <strong>Easy Returns</strong>
+      <p>30-day hassle-free returns</p>
+    </div>
+  </div>
+  <div class="banner-item">
+    <span class="banner-icon">🔒</span>
+    <div>
+      <strong>Secure Payment</strong>
+      <p>100% secure checkout</p>
+    </div>
+  </div>
+  <div class="banner-item">
+    <span class="banner-icon">✨</span>
+    <div>
+      <strong>Premium Quality</strong>
+      <p>Curated for every style</p>
+    </div>
+  </div>
+</section>
